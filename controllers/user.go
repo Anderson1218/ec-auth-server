@@ -94,6 +94,12 @@ func (c Controller) Signup(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		if user.Name == "" {
+			error.Message = "Name is missing."
+			utils.RespondWithError(w, http.StatusBadRequest, error)
+			return
+		}
+
 		hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 
 		if err != nil {
