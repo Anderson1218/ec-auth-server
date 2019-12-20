@@ -1,0 +1,9 @@
+# dependencies
+
+# misc
+.DS_Store
+.env*
+.vscode
+
+app.yaml
+.gcloudignore
