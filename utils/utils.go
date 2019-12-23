@@ -1,14 +1,16 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Anderson1218/ec-auth-server/models"
-	jwt "github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/Anderson1218/ec-auth-server/models"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 func RespondWithError(w http.ResponseWriter, status int, error models.Error) {
@@ -62,7 +64,15 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 			}
 
 			if token.Valid {
-				next.ServeHTTP(w, r)
+				claims, ok := token.Claims.(jwt.MapClaims)
+				//extract email from Claim
+				if ok {
+					fmt.Println("Got email from TokenVerifyMiddleWare:", claims["email"])
+				} else {
+					log.Printf("error")
+				}
+				ctx := context.WithValue(r.Context(), "email", claims["email"])
+				next.ServeHTTP(w, r.WithContext(ctx))
 			} else {
 				errorObject.Message = error.Error()
 				RespondWithError(w, http.StatusUnauthorized, errorObject)

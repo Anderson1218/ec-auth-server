@@ -3,7 +3,6 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -22,7 +21,6 @@ func (c Controller) Login(db *sql.DB) http.HandlerFunc {
 		var user models.User
 		var jwt models.JWT
 		var error models.Error
-
 		json.NewDecoder(r.Body).Decode(&user)
 
 		if user.Email == "" {
@@ -109,7 +107,7 @@ func (c Controller) Signup(db *sql.DB) http.HandlerFunc {
 		user.Password = string(hash)
 
 		userRepo := userRepository.UserRepository{}
-		user = userRepo.Signup(db, user)
+		user, err = userRepo.Signup(db, user)
 
 		if err != nil {
 			error.Message = "Server error."
@@ -128,6 +126,19 @@ func (c Controller) Signup(db *sql.DB) http.HandlerFunc {
 
 func (c Controller) Me(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("success.")
+		var user models.User
+		var error models.Error
+		user.Email = r.Context().Value("email").(string)
+		user.Password = ""
+		userRepo := userRepository.UserRepository{}
+		user, err := userRepo.GetUserProfile(db, user)
+		if err != nil {
+			error.Message = "Server error."
+			utils.RespondWithError(w, http.StatusInternalServerError, error)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		utils.ResponseJSON(w, user)
+
 	}
 }
