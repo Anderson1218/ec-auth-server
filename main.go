@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/Anderson1218/ec-auth-server/controllers"
 	"github.com/Anderson1218/ec-auth-server/driver"
@@ -20,6 +21,10 @@ func init() {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
 	db = driver.ConnectDB()
 	r := mux.NewRouter()
 
@@ -36,5 +41,5 @@ func main() {
 	})
 	handler := c.Handler(r)
 
-	log.Fatal(http.ListenAndServe(":8000", handler))
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
