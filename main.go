@@ -23,7 +23,8 @@ func init() {
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		port = "8080"
+		// log.Fatal("$PORT must be set")
 	}
 	db = driver.ConnectDB()
 	r := mux.NewRouter()
