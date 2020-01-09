@@ -33,7 +33,7 @@ COPY --from=builder /app/main .
 COPY ./.env .
 
 # Expose port 8000 to the outside world
-EXPOSE 8080
+EXPOSE 8000
 
 # There can only be one CMD instruction in a Dockerfile. If you list more than one CMD then only the last CMD will take effect.
 # Command to run the executable
