@@ -31,9 +31,9 @@ func main() {
 
 	controller := controllers.Controller{}
 
-	r.HandleFunc("/api/users", controller.Signup(db)).Methods("POST")
-	r.HandleFunc("/api/users/token", controller.Login(db)).Methods("POST")
-	r.HandleFunc("/api/users/me", utils.TokenVerifyMiddleWare(controller.Me(db))).Methods("GET")
+	r.HandleFunc("/users", controller.Signup(db)).Methods("POST")
+	r.HandleFunc("/users/token", controller.Login(db)).Methods("POST")
+	r.HandleFunc("/users/me", utils.TokenVerifyMiddleWare(controller.Me(db))).Methods("GET")
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
